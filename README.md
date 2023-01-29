@@ -6,7 +6,7 @@
 
 Устанавливаем git, ansible
 
-Клонируем репозиторий https://github.com/drugovdv/diplom
+Клонируем репозиторий https://github.com/drugovdv/netology_diplom.git
 
 С помощью ansible 
 

@@ -206,7 +206,7 @@ resource "yandex_compute_instance" "admin" {
   }
 
   metadata = {
-    user-data = "${file("~/diplom/diplom-terraform/meta.txt")}"
+    user-data = "${file("~/netology_diplom/diplom-terraform/meta.txt")}"
   }
 
   scheduling_policy {
@@ -245,7 +245,7 @@ resource "yandex_compute_instance_group" "web" {
     }
   
     metadata = {
-    user-data = "${file("~/diplom/diplom-terraform/meta.txt")}"
+    user-data = "${file("~/netology_diplom/diplom-terraform/meta.txt")}"
     }
 
     scheduling_policy {
@@ -383,7 +383,7 @@ resource "yandex_compute_instance" "grafana" {
   }
 
   metadata = {
-    user-data = "${file("~/diplom/diplom-terraform/meta.txt")}"
+    user-data = "${file("~/netology_diplom/diplom-terraform/meta.txt")}"
   }
 
   scheduling_policy {
@@ -419,7 +419,7 @@ resource "yandex_compute_instance" "kibana" {
   }
 
   metadata = {
-    user-data = "${file("~/diplom/diplom-terraform/meta.txt")}"
+    user-data = "${file("~/netology_diplom/diplom-terraform/meta.txt")}"
   }
 
   scheduling_policy {
@@ -455,7 +455,7 @@ resource "yandex_compute_instance" "prometheus" {
   }
 
   metadata = {
-    user-data = "${file("~/diplom/diplom-terraform/meta.txt")}"
+    user-data = "${file("~/netology_diplom/diplom-terraform/meta.txt")}"
   }
 
   scheduling_policy {
@@ -491,7 +491,7 @@ resource "yandex_compute_instance" "elastic" {
   }
 
   metadata = {
-    user-data = "${file("~/diplom/diplom-terraform/meta.txt")}"
+    user-data = "${file("~/netology_diplom/diplom-terraform/meta.txt")}"
   }
 
   scheduling_policy {
