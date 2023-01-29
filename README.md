@@ -38,4 +38,4 @@
 Заходим в grafana и настраиваем подключение к prometheus и dashboards для log-exporter и node-exporter
 
 Заходим в kibana и настраиваем на просмотр логов от webservers
-# netology_diplom
+
