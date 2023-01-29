@@ -1,0 +1,56 @@
+---
+- hosts: kibana
+  tasks:
+
+     - name: Download Kibana
+       get_url:
+           url: https://storage.yandexcloud.net/drugov/ELK7/kibana-7.17.8-amd64.deb?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=YCAJEAvqBdVwYwsmpSHOunfAn%2F20230122%2Fru-central1%2Fs3%2Faws4_request&X-Amz-Date=20230122T145004Z&X-Amz-Expires=2592000&X-Amz-Signature=0E632D9917190F0DC09D2B0B1EAE6D151235D9C5CFAADF86F9E3DC2D657F2656&X-Amz-SignedHeaders=host
+           dest: /home/admin/
+
+     - name: Install  Java
+       apt:
+         update_cache: yes
+         name: default-jdk
+         install_recommends: no
+
+     - name: Install Kibana 
+       apt:
+         update_cache: yes
+         deb: /home/admin/kibana-7.17.8-amd64.deb
+
+     - name: stop Kibana
+       service:
+         name: kibana
+         enabled: yes
+         state: stopped      
+
+     - name:
+       lineinfile:
+        path: /etc/kibana/kibana.yml
+        regexp: '^#server.host'
+        line: 'server.host: "10.1.1.14"'
+
+     - name:
+       lineinfile:
+        path: /etc/kibana/kibana.yml
+        regexp: '^#elasticsearch.hosts'
+        line: 'elasticsearch.hosts: ["http://elasticsearch:9200"]'
+
+     - name:
+       lineinfile:
+        path: /etc/kibana/kibana.yml
+        regexp: '^#elasticsearch.username:'
+        line: 'elasticsearch.username: "kibana_system"'
+
+     - name:
+       lineinfile:
+        path: /etc/kibana/kibana.yml
+        regexp: '^#elasticsearch.password:'
+        line: 'elasticsearch.password: "301076"'
+
+     - name: start Kibana
+       service:
+         name: kibana
+         enabled: yes
+         state: restarted
+...

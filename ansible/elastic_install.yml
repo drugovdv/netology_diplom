@@ -1,0 +1,42 @@
+---
+- hosts: elasticsearch
+  tasks:
+
+     - name: Download Elasticsearch
+       get_url:
+           url: https://storage.yandexcloud.net/drugov/ELK7/elasticsearch-7.17.8-amd64.deb?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=YCAJEAvqBdVwYwsmpSHOunfAn%2F20230122%2Fru-central1%2Fs3%2Faws4_request&X-Amz-Date=20230122T144633Z&X-Amz-Expires=2592000&X-Amz-Signature=6C7FFDEAED5CC06350AA603087D6F612840D5A4561F65373B80D4EAEE02B826F&X-Amz-SignedHeaders=host
+           dest: /home/admin/
+
+     - name: Install  Java
+       apt:
+         update_cache: yes
+         name: default-jdk
+         install_recommends: no
+
+     - name: Install  Elasticsearch
+       apt:
+         update_cache: yes
+         deb: /home/admin/elasticsearch-7.17.8-amd64.deb
+
+     - name: start Elasticsearch
+       service:
+         name: elasticsearch
+         enabled: yes
+         state: started
+
+    #  - name: Download Logstash
+    #    get_url:
+    #        url: https://storage.yandexcloud.net/drugov/ELK7/logstash-7.17.8-amd64.deb?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=YCAJEAvqBdVwYwsmpSHOunfAn%2F20230122%2Fru-central1%2Fs3%2Faws4_request&X-Amz-Date=20230122T144820Z&X-Amz-Expires=2592000&X-Amz-Signature=283CAD8DC2FFF37754E31002C3CD26369426CEA13A070A482BAD1783459E86B8&X-Amz-SignedHeaders=host
+    #        dest: /home/drugov/  
+
+    #  - name: Install  Logstash
+    #    apt:
+    #      update_cache: yes
+    #      deb: /home/drugov/logstash-7.17.8-amd64.deb
+
+    #  - name: start Logstash
+    #    service:
+    #      name: Logstash
+    #      enabled: yes
+        #  state: started
+...

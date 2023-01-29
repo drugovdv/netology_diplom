@@ -1,0 +1,104 @@
+---
+
+- name: Nginx
+  hosts: webservers
+  vars:
+    server_name: "{{ ansible_default_ipv4.address }}"
+    document_root: /var/www
+    app_root: My_site
+  tasks:
+
+    - name: install Nginx
+      apt:
+        name: nginx
+        state: latest
+        update_cache: yes
+
+    - name: Restart Nginx
+      service:
+        name: nginx
+        enabled: yes
+        state: restarted
+
+    - name: Copy site
+      copy:
+        src: "{{ app_root }}"
+        dest: "{{ document_root }}"
+        mode: preserve
+
+    - name: delete default 
+      file:
+        path: /etc/nginx/sites-available/default
+        state: absent
+
+    - name: delete default 
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
+    - name: Apply Nginx template
+      template:
+        src: files/nginx.conf.j2
+        dest: /etc/nginx/sites-available/mysite
+      notify: Restart Nginx
+
+    - name: Enable new site
+      file:
+        src: /etc/nginx/sites-available/mysite
+        dest: /etc/nginx/sites-enabled/mysite
+        state: link
+      notify: Restart Nginx
+
+    - name: Create Directories
+      file:
+        path: /var/log/nginx/mysite/
+        state: directory
+        
+    - name:
+      lineinfile:
+        path: /etc/nginx/nginx.conf
+        regexp: '^\s*# Logging Settings'
+        line: log_format custom   '$remote_addr - $remote_user [$time_local] ' '"$request" $status $body_bytes_sent ' '"$http_referer" "$http_user_agent" "$http_x_forwarded_for"';
+      notify: Restart Nginx
+
+    - name:
+      lineinfile:
+        path: /etc/nginx/nginx.conf
+        regexp: '^\s*access_log /var/log/nginx/access.log'
+        line: access_log /var/log/nginx/mysite/access.log custom;
+      notify: Restart Nginx
+
+    - name:
+      lineinfile:
+        path: /etc/nginx/nginx.conf
+        regexp: '^\s*error_log /var/log/nginx/error.log'
+        line: error_log /var/log/nginx/mysite/error.log;
+      notify: Restart Nginx  
+
+    - name: "Install prometheus-nginxlog-exporter"
+      apt:
+        deb: https://github.com/martin-helmich/prometheus-nginxlog-exporter/releases/download/v1.10.0/prometheus-nginxlog-exporter_1.10.0_linux_amd64.deb
+        state: present
+
+    - name: delete default 
+      file:
+        path: /etc/prometheus-nginxlog-exporter.hcl  
+        state: absent
+
+    - name: Apply prometheus-nginxlog-exporter template
+      template:
+        src: files/prometheus-nginxlog-exporter.hcl.j2
+        dest: /etc/prometheus-nginxlog-exporter.hcl
+
+    - name: Restart prometheus-nginxlog-exporter
+      service:
+        name: prometheus-nginxlog-exporter
+        enabled: yes
+        state: restarted   
+
+
+  handlers:
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
