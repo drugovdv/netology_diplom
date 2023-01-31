@@ -1,2 +1,3 @@
 yandex_token_cloud
 terraform.*
+*.backup
