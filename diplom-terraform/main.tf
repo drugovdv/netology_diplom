@@ -32,10 +32,14 @@ resource "yandex_resourcemanager_folder_iam_binding" "editor" {
   ]
 }
 
+#################################################################################################################
+
 resource "yandex_vpc_network" "mysite-net" {
   name = "mysite-network"
   folder_id = "${yandex_resourcemanager_folder.mysite.id}"
 }
+
+##################################################################################################################
 
 resource "yandex_vpc_subnet" "subnet-1" {
   name           = "private_net1"
@@ -72,6 +76,8 @@ resource "yandex_vpc_subnet" "subnet" {
   v4_cidr_blocks = ["10.1.1.0/24"]
 }
 
+################################################################################################################
+
 resource "yandex_vpc_gateway" "egress-gateway" {
   name = "egress-gateway"
   folder_id = "${yandex_resourcemanager_folder.mysite.id}"
@@ -88,94 +94,41 @@ resource "yandex_vpc_route_table" "mysite-rt" {
   }
 }
 
-resource "yandex_vpc_security_group" "group" {
-  name        = "Mysite security group"
-  description = "  security group"
+####################################################################################################################
+
+resource "yandex_vpc_security_group" "adm" {
+  name        = "security adm"
+  description = "security adm"
   network_id     = "${yandex_vpc_network.mysite-net.id}"
   folder_id = "${yandex_resourcemanager_folder.mysite.id}"
-}
 
-resource "yandex_vpc_security_group_rule" "ruleSSH" {
-  security_group_binding = yandex_vpc_security_group.group.id
-  direction              = "ingress"
-  description            = "ruleSSH"
-  v4_cidr_blocks         = ["10.1.1.0/24", "192.168.1.0/24", "192.168.2.0/24", "192.168.3.0/24"]
-  port                   = 22
-  protocol               = "TCP"
-}
+  ingress {
+    protocol       = "TCP"
+    description    = "ssh"
+    v4_cidr_blocks  = ["0.0.0.0/0"]
+    port           = 22
+  }
+  
+    ingress {
+    protocol       = "TCP"
+    description    = "prometheus1"
+    v4_cidr_blocks  = ["192.168.3.10/32"]
+    port           = 9100
+  }
 
-resource "yandex_vpc_security_group_rule" "ruleNode-exp" {
-  security_group_binding = yandex_vpc_security_group.group.id
-  direction              = "ingress"
-  description            = "ruleNode-exp"
-  v4_cidr_blocks         = ["10.1.1.0/24", "192.168.1.0/24", "192.168.2.0/24", "192.168.3.0/24"]
-  port                   = 9100
-  protocol               = "TCP"
-}
+  ingress {
+    protocol       = "ICMP"
+    description    = "ismp"
+    v4_cidr_blocks  = ["10.1.1.0/24", "192.168.1.0/24", "192.168.2.0/24", "192.168.3.0/24"]
+  }
 
-resource "yandex_vpc_security_group_rule" "ruleLog-exp-nginx" {
-  security_group_binding = yandex_vpc_security_group.group.id
-  direction              = "ingress"
-  description            = "ruleLog-exp-nginx"
-  v4_cidr_blocks         = ["192.168.1.0/24", "192.168.2.0/24"]
-  port                   = 4040
-  protocol               = "TCP"
-}
-
-resource "yandex_vpc_security_group_rule" "ruleHTTP" {
-  security_group_binding = yandex_vpc_security_group.group.id
-  direction              = "ingress"
-  description            = "ruleHTTP"
-  v4_cidr_blocks         = ["10.1.1.0/24", "192.168.1.0/24", "192.168.2.0/24"]
-  port                   = 80
-  protocol               = "TCP"
-}
-
-resource "yandex_vpc_security_group_rule" "rulePrometheus" {
-  security_group_binding = yandex_vpc_security_group.group.id
-  direction              = "ingress"
-  description            = "rulePrometheus"
-  v4_cidr_blocks         = ["192.168.3.10/32"]
-  port                   = 9090
-  protocol               = "TCP"
-}
-
-resource "yandex_vpc_security_group_rule" "ruleElastic" {
-  security_group_binding = yandex_vpc_security_group.group.id
-  direction              = "ingress"
-  description            = "ruleElastic"
-  v4_cidr_blocks         = ["192.168.3.5/32"]
-  from_port              = 9200
-  to_port                = 9300
-  protocol               = "TCP"
-}
-
-resource "yandex_vpc_security_group_rule" "ruleKibana" {
-  security_group_binding = yandex_vpc_security_group.group.id
-  direction              = "ingress"
-  description            = "ruleKibana"
-  v4_cidr_blocks         = ["10.1.1.14/32"]
-  port                   = 5601
-  protocol               = "TCP"
-}
-
-resource "yandex_vpc_security_group_rule" "ruleGrafana" {
-  security_group_binding = yandex_vpc_security_group.group.id
-  direction              = "ingress"
-  description            = "ruleGrafana"
-  v4_cidr_blocks         = ["10.1.1.10/32"]
-  port                   = 3000
-  protocol               = "TCP"
-}
-
-resource "yandex_vpc_security_group_rule" "ruleEgress" {
-  security_group_binding = yandex_vpc_security_group.group.id
-  direction              = "egress"
-  description            = "ruleEgress"
-  v4_cidr_blocks         = ["10.1.1.0/24", "192.168.1.0/24", "192.168.2.0/24", "192.168.3.0/24"]
-  from_port              = 1
-  to_port                = 65535
-  protocol               = "ANY"
+  egress {
+    protocol       = "ANY"
+    description    = "admEgress"
+    v4_cidr_blocks  = ["0.0.0.0/0"]
+    from_port      = 1
+    to_port        = 65535
+  }
 }
 
 resource "yandex_compute_instance" "admin" {
@@ -203,6 +156,7 @@ resource "yandex_compute_instance" "admin" {
     subnet_id     = "${yandex_vpc_subnet.subnet.id}"
     nat       = true
     ip_address = "10.1.1.100"
+    security_group_ids = ["${yandex_vpc_security_group.adm.id}"]
   }
 
   metadata = {
@@ -211,6 +165,63 @@ resource "yandex_compute_instance" "admin" {
 
   scheduling_policy {
     preemptible = true
+  }
+}
+
+###############################################################################################################
+
+resource "yandex_vpc_security_group" "web" {
+  name        = "Mysite security web"
+  description = " Mysite security web"
+  network_id     = "${yandex_vpc_network.mysite-net.id}"
+  folder_id = "${yandex_resourcemanager_folder.mysite.id}"
+
+  ingress {
+    protocol       = "TCP"
+    description    = "http"
+    v4_cidr_blocks  = ["10.1.1.0/24"]
+    port           = 80
+  }
+  
+  ingress {
+    protocol       = "TCP"
+    description    = "loadbal"
+    predefined_target =  "loadbalancer_healthchecks"
+  }
+
+  ingress {
+    protocol       = "TCP"
+    description    = "ssh"
+    v4_cidr_blocks  = ["10.1.1.100/32"]
+    port           = 22
+  }
+
+  ingress {
+    protocol       = "TCP"
+    description    = "prometheus1"
+    v4_cidr_blocks  = ["192.168.3.10/32"]
+    port           = 9100
+  }
+
+  ingress {
+    protocol       = "TCP"
+    description    = "prometheus2"
+    v4_cidr_blocks  = ["192.168.3.10/32"]
+    port           = 4040
+  }
+
+  ingress {
+    protocol       = "ICMP"
+    description    = "ismp"
+    v4_cidr_blocks  = ["10.1.1.0/24", "192.168.1.0/24", "192.168.2.0/24", "192.168.3.0/24"]
+  }
+
+  egress {
+    protocol       = "ANY"
+    description    = "admEgress"
+    v4_cidr_blocks  = ["0.0.0.0/0"]
+    from_port      = 1
+    to_port        = 65535
   }
 }
 
@@ -242,6 +253,7 @@ resource "yandex_compute_instance_group" "web" {
     network_id     = "${yandex_vpc_network.mysite-net.id}"
     subnet_ids     = ["${yandex_vpc_subnet.subnet-1.id}","${yandex_vpc_subnet.subnet-2.id}"]
     nat       = false
+    security_group_ids = ["${yandex_vpc_security_group.web.id}"]
     }
   
     metadata = {
@@ -355,6 +367,52 @@ resource "yandex_alb_load_balancer" "mysite-balancer" {
   }
 }
 
+
+
+##################################################################################################################################
+
+resource "yandex_vpc_security_group" "graf" {
+  name        = "Mysite security grafana"
+  description = " Mysite security grafana"
+  network_id     = "${yandex_vpc_network.mysite-net.id}"
+  folder_id = "${yandex_resourcemanager_folder.mysite.id}"
+
+  ingress {
+    protocol       = "TCP"
+    description    = "graf"
+    v4_cidr_blocks  = ["0.0.0.0/0"]
+    port           = 3000
+  }
+  
+  ingress {
+    protocol       = "TCP"
+    description    = "prometheus1"
+    v4_cidr_blocks  = ["192.168.3.10/32"]
+    port           = 9100
+  }
+
+  ingress {
+    protocol       = "TCP"
+    description    = "ssh"
+    security_group_id = "${yandex_vpc_security_group.adm.id}"
+    port           = 22
+  }
+
+  ingress {
+    protocol       = "ICMP"
+    description    = "ismp"
+    v4_cidr_blocks  = ["0.0.0.0/0"]
+  }
+
+  egress {
+    protocol       = "ANY"
+    description    = "admEgress"
+    v4_cidr_blocks  = ["0.0.0.0/0"]
+    from_port      = 1
+    to_port        = 65535
+  }
+}
+
 resource "yandex_compute_instance" "grafana" {
   name        = "grafana"
   hostname = "grafana"
@@ -380,6 +438,7 @@ resource "yandex_compute_instance" "grafana" {
     subnet_id     = "${yandex_vpc_subnet.subnet.id}"
     nat       = true
     ip_address = "10.1.1.10"
+    security_group_ids = ["${yandex_vpc_security_group.graf.id}"]
   }
 
   metadata = {
@@ -388,6 +447,50 @@ resource "yandex_compute_instance" "grafana" {
 
   scheduling_policy {
     preemptible = true
+  }
+}
+
+##################################################################################################################
+
+resource "yandex_vpc_security_group" "kib" {
+  name        = "Mysite security kibana"
+  description = " Mysite security kibana"
+  network_id     = "${yandex_vpc_network.mysite-net.id}"
+  folder_id = "${yandex_resourcemanager_folder.mysite.id}"
+
+  ingress {
+    protocol       = "TCP"
+    description    = "kibana"
+    v4_cidr_blocks  = ["0.0.0.0/0"]
+    port           = 5601
+  }
+
+  ingress {
+    protocol       = "TCP"
+    description    = "prometheus1"
+    v4_cidr_blocks  = ["192.168.3.10/32"]
+    port           = 9100
+  }
+
+  ingress {
+    protocol       = "TCP"
+    description    = "ssh"
+    security_group_id = "${yandex_vpc_security_group.adm.id}"
+    port           = 22
+  }
+
+  ingress {
+    protocol       = "ICMP"
+    description    = "ismp"
+    v4_cidr_blocks  = ["0.0.0.0/0"]
+  }
+
+  egress {
+    protocol       = "ANY"
+    description    = "admEgress"
+    v4_cidr_blocks  = ["0.0.0.0/0"]
+    from_port      = 1
+    to_port        = 65535
   }
 }
 
@@ -416,6 +519,7 @@ resource "yandex_compute_instance" "kibana" {
     subnet_id     = "${yandex_vpc_subnet.subnet.id}"
     nat       = true
     ip_address = "10.1.1.14"
+    security_group_ids = ["${yandex_vpc_security_group.kib.id}"]
   }
 
   metadata = {
@@ -424,6 +528,43 @@ resource "yandex_compute_instance" "kibana" {
 
   scheduling_policy {
     preemptible = true
+  }
+}
+
+#########################################################################################################################
+
+resource "yandex_vpc_security_group" "prom" {
+  name        = "Mysite security prometheus"
+  description = " Mysite security prometheus"
+  network_id     = "${yandex_vpc_network.mysite-net.id}"
+  folder_id = "${yandex_resourcemanager_folder.mysite.id}"
+
+  ingress {
+    protocol       = "TCP"
+    description    = "prometheus"
+    v4_cidr_blocks  = ["10.1.1.0/24", "192.168.1.0/24", "192.168.2.0/24", "192.168.3.0/24"]
+    port           = 9090
+  }
+  
+  ingress {
+    protocol       = "TCP"
+    description    = "ssh"
+    security_group_id = "${yandex_vpc_security_group.adm.id}"
+    port           = 22
+  }
+
+  ingress {
+    protocol       = "ICMP"
+    description    = "ismp"
+    v4_cidr_blocks  = ["0.0.0.0/0"]
+  }
+
+  egress {
+    protocol       = "ANY"
+    description    = "admEgress"
+    v4_cidr_blocks  = ["0.0.0.0/0"]
+    from_port      = 1
+    to_port        = 65535
   }
 }
 
@@ -452,6 +593,7 @@ resource "yandex_compute_instance" "prometheus" {
     subnet_id     = "${yandex_vpc_subnet.subnet-3.id}"
     nat       = false
     ip_address = "192.168.3.10"
+    security_group_ids = ["${yandex_vpc_security_group.prom.id}"]
   }
 
   metadata = {
@@ -460,6 +602,50 @@ resource "yandex_compute_instance" "prometheus" {
 
   scheduling_policy {
     preemptible = true
+  }
+}
+
+########################################################################################################
+
+resource "yandex_vpc_security_group" "el" {
+  name        = "Mysite security elastic"
+  description = " Mysite security elastic"
+  network_id     = "${yandex_vpc_network.mysite-net.id}"
+  folder_id = "${yandex_resourcemanager_folder.mysite.id}"
+
+  ingress {
+    protocol       = "TCP"
+    description    = "elastic"
+    v4_cidr_blocks  = ["10.1.1.0/24", "192.168.1.0/24", "192.168.2.0/24", "192.168.3.0/24"]
+    port           = 9200
+  }
+
+  ingress {
+    protocol       = "TCP"
+    description    = "prometheus1"
+    v4_cidr_blocks  = ["192.168.3.10/32"]
+    port           = 9100
+  }
+
+  ingress {
+    protocol       = "TCP"
+    description    = "ssh"
+    security_group_id = "${yandex_vpc_security_group.adm.id}"
+    port           = 22
+  }
+
+  ingress {
+    protocol       = "ICMP"
+    description    = "ismp"
+    v4_cidr_blocks  = ["0.0.0.0/0"]
+  }
+
+  egress {
+    protocol       = "ANY"
+    description    = "admEgress"
+    v4_cidr_blocks  = ["0.0.0.0/0"]
+    from_port      = 1
+    to_port        = 65535
   }
 }
 
@@ -488,6 +674,7 @@ resource "yandex_compute_instance" "elastic" {
     subnet_id     = "${yandex_vpc_subnet.subnet-3.id}"
     nat       = false
     ip_address = "192.168.3.5"
+    security_group_ids = ["${yandex_vpc_security_group.el.id}"]
   }
 
   metadata = {
@@ -499,6 +686,6 @@ resource "yandex_compute_instance" "elastic" {
   }
 }
 
-#################
+###############################################################################################################
 
 
