@@ -710,7 +710,7 @@ resource "yandex_compute_snapshot_schedule" "snapshot" {
   folder_id   = "${yandex_resourcemanager_folder.mysite.id}"
 
   schedule_policy {
-    expression = "00 20 ? * *"
+    expression = "00 00 ? * *"
   }
 
   snapshot_count = 7
