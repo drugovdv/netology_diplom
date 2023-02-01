@@ -691,6 +691,9 @@ resource "yandex_compute_instance" "elastic" {
 data "yandex_compute_instance" "web-1" {
   name = "web-1"
   folder_id   = "${yandex_resourcemanager_folder.mysite.id}"
+  depends_on = [
+    yandex_alb_load_balancer.mysite-balancer
+  ]
 }
 
 data "yandex_compute_instance" "web-2" {
