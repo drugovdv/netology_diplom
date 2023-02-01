@@ -32,14 +32,14 @@ resource "yandex_resourcemanager_folder_iam_binding" "editor" {
   ]
 }
 
-##################################################################
+#################################################################################################################
 
 resource "yandex_vpc_network" "mysite-net" {
   name = "mysite-network"
   folder_id = "${yandex_resourcemanager_folder.mysite.id}"
 }
 
-###################################################################
+##################################################################################################################
 
 resource "yandex_vpc_subnet" "subnet-1" {
   name           = "private_net1"
@@ -76,7 +76,7 @@ resource "yandex_vpc_subnet" "subnet" {
   v4_cidr_blocks = ["10.1.1.0/24"]
 }
 
-##############################################################
+################################################################################################################
 
 resource "yandex_vpc_gateway" "egress-gateway" {
   name = "egress-gateway"
@@ -94,7 +94,7 @@ resource "yandex_vpc_route_table" "mysite-rt" {
   }
 }
 
-##################################################################
+####################################################################################################################
 
 resource "yandex_vpc_security_group" "adm" {
   name        = "security adm"
@@ -168,7 +168,7 @@ resource "yandex_compute_instance" "admin" {
   }
 }
 
-#########################################################################
+###############################################################################################################
 
 resource "yandex_vpc_security_group" "web" {
   name        = "Mysite security web"
@@ -367,7 +367,9 @@ resource "yandex_alb_load_balancer" "mysite-balancer" {
   }
 }
 
-########################################################################
+
+
+##################################################################################################################################
 
 resource "yandex_vpc_security_group" "graf" {
   name        = "Mysite security grafana"
@@ -448,7 +450,7 @@ resource "yandex_compute_instance" "grafana" {
   }
 }
 
-#########################################################################
+##################################################################################################################
 
 resource "yandex_vpc_security_group" "kib" {
   name        = "Mysite security kibana"
@@ -529,7 +531,7 @@ resource "yandex_compute_instance" "kibana" {
   }
 }
 
-###########################################################################
+#########################################################################################################################
 
 resource "yandex_vpc_security_group" "prom" {
   name        = "Mysite security prometheus"
@@ -603,7 +605,7 @@ resource "yandex_compute_instance" "prometheus" {
   }
 }
 
-#########################################################################
+########################################################################################################
 
 resource "yandex_vpc_security_group" "el" {
   name        = "Mysite security elastic"
@@ -684,50 +686,40 @@ resource "yandex_compute_instance" "elastic" {
   }
 }
 
-###############################################################################
-
-output "admin_disk_id" {
-  value = "${yandex_compute_instance.admin.boot_disk.0.disk_id}"
-}
-
-output "elastic_disk_id" {
-  value = "${yandex_compute_instance.elastic.boot_disk.0.disk_id}"
-}
-
-output "kibana_disk_id" {
-  value = "${yandex_compute_instance.kibana.boot_disk.0.disk_id}"
-}
-
-output "prometheus_disk_id" {
-  value = "${yandex_compute_instance.prometheus.boot_disk.0.disk_id}"
-}
-
-output "grafana_disk_id" {
-  value = "${yandex_compute_instance.grafana.boot_disk.0.disk_id}"
-}
-
-######################################################
+#######################################################################
 
 data "yandex_compute_instance" "web-1" {
   name = "web-1"
   folder_id   = "${yandex_resourcemanager_folder.mysite.id}"
-}
-output "web-1_disk_id" {
-  value = "${data.yandex_compute_instance.web-1.boot_disk.0.disk_id}"
 }
 
 data "yandex_compute_instance" "web-2" {
   name = "web-2"
   folder_id   = "${yandex_resourcemanager_folder.mysite.id}"
 }
-output "web-2_disk_id" {
-  value = "${data.yandex_compute_instance.web-2.boot_disk.0.disk_id}"
-}
 
 data "yandex_compute_instance" "web-3" {
   name = "web-3"
   folder_id   = "${yandex_resourcemanager_folder.mysite.id}"
 }
-output "web-3_disk_id" {
-  value = "${data.yandex_compute_instance.web-3.boot_disk.0.disk_id}"
+
+######################################################################
+
+resource "yandex_compute_snapshot_schedule" "snapshot" {
+  name           = "my-snapshot"
+  folder_id   = "${yandex_resourcemanager_folder.mysite.id}"
+
+  schedule_policy {
+    expression = "00 19 ? * *"
+  }
+
+  snapshot_count = 7
+
+  snapshot_spec {
+      description = "snapshot-everyday"
+  }
+
+  disk_ids = ["${yandex_compute_instance.admin.boot_disk.0.disk_id}", "${yandex_compute_instance.elastic.boot_disk.0.disk_id}", "${yandex_compute_instance.kibana.boot_disk.0.disk_id}", "${yandex_compute_instance.prometheus.boot_disk.0.disk_id}", "${yandex_compute_instance.grafana.boot_disk.0.disk_id}", "${data.yandex_compute_instance.web-1.boot_disk.0.disk_id}", "${data.yandex_compute_instance.web-2.boot_disk.0.disk_id}", "${data.yandex_compute_instance.web-3.boot_disk.0.disk_id}"]
 }
+
+#######################################################################
