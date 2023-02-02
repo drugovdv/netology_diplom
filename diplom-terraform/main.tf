@@ -343,6 +343,10 @@ resource "yandex_alb_load_balancer" "mysite-balancer" {
   network_id     = "${yandex_vpc_network.mysite-net.id}"
   folder_id = "${yandex_resourcemanager_folder.mysite.id}"
 
+  depends_on = [
+    yandex_compute_instance_group.web
+  ]
+
   allocation_policy {
     location {
       zone_id   = "ru-central1-a"
@@ -699,11 +703,17 @@ data "yandex_compute_instance" "web-1" {
 data "yandex_compute_instance" "web-2" {
   name = "web-2"
   folder_id   = "${yandex_resourcemanager_folder.mysite.id}"
+  depends_on = [
+    yandex_alb_load_balancer.mysite-balancer
+  ]
 }
 
 data "yandex_compute_instance" "web-3" {
   name = "web-3"
   folder_id   = "${yandex_resourcemanager_folder.mysite.id}"
+  depends_on = [
+    yandex_alb_load_balancer.mysite-balancer
+  ] 
 }
 
 ######################################################################
