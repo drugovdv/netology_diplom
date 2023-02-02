@@ -41,6 +41,12 @@
        shell:  filebeat setup --pipelines --modules nginx
 
      - name: Execute the command
+       shell: filebeat modules enable system
+
+     - name: Execute the command
+       shell:  filebeat setup --pipelines --modules system
+
+     - name: Execute the command
        shell:  filebeat setup --index-management -E output.logstash.enabled=false -E 'output.elasticsearch.hosts=["elasticsearch:9200"]'
 
      - name: Execute the command
