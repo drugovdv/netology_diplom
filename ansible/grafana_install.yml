@@ -26,10 +26,6 @@
        template:
           src: files/grafana_datasources.yml.j2
           dest: /etc/grafana/provisioning/datasources/grafana_datasources.yml
-          owner: root
-          group: root
-          mode: '0644'
-          backup: yes         
 
      - name: start Grafana
        service:
