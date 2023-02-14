@@ -1,7 +1,7 @@
 ---
 - hosts: prometheus
-
-  tasks: 
+  tasks:
+  
     - name: Prometheus install
       apt:
         name: prometheus
@@ -31,11 +31,6 @@
 
 - hosts: all
   tasks:
-
-    - name: Localtime
-      shell:  ln -sf /usr/share/zoneinfo/Europe/Moscow /etc/localtime
-
-
     - name: Install node-exporter
       apt:
         name: prometheus-node-exporter
