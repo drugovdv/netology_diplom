@@ -1,0 +1,42 @@
+---
+- hosts: grafana
+  tasks:
+
+     - name: Download Grafana
+       get_url:
+           url: https://storage.yandexcloud.net/drugov/grafana/grafana-enterprise_9.3.6_amd64.deb?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=YCAJEAvqBdVwYwsmpSHOunfAn%2F20230213%2Fru-central1%2Fs3%2Faws4_request&X-Amz-Date=20230213T142009Z&X-Amz-Expires=2592000&X-Amz-Signature=DC77C72D786E055C2B35976DD289F59E9DF95AC47004B166F670C13CBC1F8E30&X-Amz-SignedHeaders=host
+           dest: /home/drugov/
+
+     - name: Install required system packages
+       apt:
+        pkg:
+          - apt-transport-https
+          - curl
+          - wget
+          - software-properties-common
+        state: latest
+        update_cache: true
+
+     - name: Install Grafana
+       apt:
+         update_cache: yes
+         deb: /home/drugov/grafana-enterprise_9.3.6_amd64.deb
+
+     - name: Copy config file for Datasources
+       template:
+          src: files/grafana_datasources.yml.j2
+          dest: /etc/grafana/provisioning/datasources/grafana_datasources.yml
+          owner: root
+          group: root
+          mode: '0644'
+          backup: yes         
+
+     - name: start Grafana
+       service:
+         name: grafana-server
+         enabled: yes
+         state: started
+  
+
+       
+...
