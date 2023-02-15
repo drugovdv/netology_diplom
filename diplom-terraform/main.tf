@@ -317,10 +317,6 @@ resource "yandex_alb_backend_group" "backend-group" {
 resource "yandex_alb_http_router" "tf-router" {
   name      = "mysite-http-router"
   folder_id = "${yandex_resourcemanager_folder.mysite.id}"
-  labels = {
-    tf-label    = "tf-label-value"
-    empty-label = ""
-  }
 }
 
 resource "yandex_alb_virtual_host" "mysite-virtual-host" {
@@ -690,33 +686,7 @@ resource "yandex_compute_instance" "elastic" {
   }
 }
 
-#######################################################################
-
-data "yandex_compute_instance" "web-1" {
-  name = "web-1"
-  folder_id   = "${yandex_resourcemanager_folder.mysite.id}"
-  depends_on = [
-    yandex_alb_load_balancer.mysite-balancer
-  ]
-}
-
-data "yandex_compute_instance" "web-2" {
-  name = "web-2"
-  folder_id   = "${yandex_resourcemanager_folder.mysite.id}"
-  depends_on = [
-    yandex_alb_load_balancer.mysite-balancer
-  ]
-}
-
-data "yandex_compute_instance" "web-3" {
-  name = "web-3"
-  folder_id   = "${yandex_resourcemanager_folder.mysite.id}"
-  depends_on = [
-    yandex_alb_load_balancer.mysite-balancer
-  ] 
-}
-
-######################################################################
+#######################################################################################
 
 resource "yandex_compute_snapshot_schedule" "snapshot" {
   name           = "my-snapshot"
@@ -732,7 +702,52 @@ resource "yandex_compute_snapshot_schedule" "snapshot" {
       description = "snapshot-everyday"
   }
 
-  disk_ids = ["${yandex_compute_instance.admin.boot_disk.0.disk_id}", "${yandex_compute_instance.elastic.boot_disk.0.disk_id}", "${yandex_compute_instance.kibana.boot_disk.0.disk_id}", "${yandex_compute_instance.prometheus.boot_disk.0.disk_id}", "${yandex_compute_instance.grafana.boot_disk.0.disk_id}", "${data.yandex_compute_instance.web-1.boot_disk.0.disk_id}", "${data.yandex_compute_instance.web-2.boot_disk.0.disk_id}", "${data.yandex_compute_instance.web-3.boot_disk.0.disk_id}"]
+  disk_ids = ["${yandex_compute_instance.admin.boot_disk.0.disk_id}", "${yandex_compute_instance.elastic.boot_disk.0.disk_id}", "${yandex_compute_instance.kibana.boot_disk.0.disk_id}", "${yandex_compute_instance.prometheus.boot_disk.0.disk_id}", "${yandex_compute_instance.grafana.boot_disk.0.disk_id}"]
 }
+
+#######################################################################
+
+# data "yandex_compute_instance" "web-1" {
+#   name = "web-1"
+#   folder_id   = "${yandex_resourcemanager_folder.mysite.id}"
+#   depends_on = [
+#     yandex_alb_load_balancer.mysite-balancer
+#   ]
+# }
+
+# data "yandex_compute_instance" "web-2" {
+#   name = "web-2"
+#   folder_id   = "${yandex_resourcemanager_folder.mysite.id}"
+#   depends_on = [
+#     yandex_alb_load_balancer.mysite-balancer
+#   ]
+# }
+
+# data "yandex_compute_instance" "web-3" {
+#   name = "web-3"
+#   folder_id   = "${yandex_resourcemanager_folder.mysite.id}"
+#   depends_on = [
+#     yandex_alb_load_balancer.mysite-balancer
+#   ] 
+# }
+
+######################################################################
+
+# resource "yandex_compute_snapshot_schedule" "snapshot" {
+#   name           = "my-snapshot"
+#   folder_id   = "${yandex_resourcemanager_folder.mysite.id}"
+
+#   schedule_policy {
+#     expression = "00 00 ? * *"
+#   }
+
+#   snapshot_count = 7
+
+#   snapshot_spec {
+#       description = "snapshot-everyday"
+#   }
+
+#   disk_ids = ["${yandex_compute_instance.admin.boot_disk.0.disk_id}", "${yandex_compute_instance.elastic.boot_disk.0.disk_id}", "${yandex_compute_instance.kibana.boot_disk.0.disk_id}", "${yandex_compute_instance.prometheus.boot_disk.0.disk_id}", "${yandex_compute_instance.grafana.boot_disk.0.disk_id}", "${data.yandex_compute_instance.web-1.boot_disk.0.disk_id}", "${data.yandex_compute_instance.web-2.boot_disk.0.disk_id}", "${data.yandex_compute_instance.web-3.boot_disk.0.disk_id}"]
+# }
 
 #######################################################################
