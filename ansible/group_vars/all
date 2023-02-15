@@ -1,0 +1,3 @@
+---
+ansible_ssh_common_args     :   '-o ProxyCommand="ssh -p 22 -W %h:%p -q admin@158.160.61.156"'
+ansible_user                :    admin
