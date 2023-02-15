@@ -27,6 +27,21 @@
           src: files/grafana_datasources.yml.j2
           dest: /etc/grafana/provisioning/datasources/grafana_datasources.yml
 
+     - name: Copy config file for Dashboards
+       template:
+          src: files/grafana_dashboards.yml.j2
+          dest: /etc/grafana/provisioning/dashboards/grafana_dashboards.yml               
+
+     - name: Copy  Dashboards Nginx
+       copy:
+          src: files/nginx_dashboard.json
+          dest: /etc/grafana/provisioning/dashboards/nginx_dashboard.json
+
+     - name: Copy  Dashboards Node
+       copy:
+          src:  files/node_dashboard.json
+          dest: /etc/grafana/provisioning/dashboards/node_dashboard.json
+
      - name: start Grafana
        service:
          name: grafana-server

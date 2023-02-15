@@ -31,7 +31,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -112,7 +112,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "Prometheus"
           },
           "editorMode": "builder",
           "expr": "rate(mysite_parse_errors_total[$__interval])",
@@ -127,7 +127,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "Prometheus"
       },
       "description": "",
       "fieldConfig": {
@@ -206,7 +206,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "Prometheus"
           },
           "editorMode": "code",
           "expr": "mysite_http_response_size_bytes",
@@ -221,7 +221,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -304,7 +304,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "Prometheus"
           },
           "editorMode": "code",
           "exemplar": false,
