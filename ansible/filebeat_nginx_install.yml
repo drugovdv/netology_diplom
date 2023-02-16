@@ -17,17 +17,17 @@
         src: files/filebeat.yml.j2
         dest: /etc/filebeat/filebeat.yml
 
-     - name:
-       lineinfile:
-        path: /etc/filebeat/filebeat.yml
-        regexp: '^\s*#username:'
-        line: '  username: "elastic"'
+    #  - name:
+    #    lineinfile:
+    #     path: /etc/filebeat/filebeat.yml
+    #     regexp: '^\s*#username:'
+    #     line: '  username: "elastic"'
 
-     - name:
-       lineinfile:
-        path: /etc/filebeat/filebeat.yml
-        regexp: '^\s*#password:'
-        line: '  password: "301076"'
+    #  - name:
+    #    lineinfile:
+    #     path: /etc/filebeat/filebeat.yml
+    #     regexp: '^\s*#password:'
+    #     line: '  password: "301076"'
 
      - name: Execute the command
        shell: filebeat modules enable nginx
