@@ -160,7 +160,7 @@ resource "yandex_compute_instance" "admin" {
   }
 
   metadata = {
-    user-data = "${file("~/netology_diplom/diplom-terraform/meta.txt")}"
+    user-data = "${file("~/netology_diplom/terraform/meta.txt")}"
   }
 
   scheduling_policy {
@@ -257,7 +257,7 @@ resource "yandex_compute_instance_group" "web" {
     }
   
     metadata = {
-    user-data = "${file("~/netology_diplom/diplom-terraform/meta.txt")}"
+    user-data = "${file("~/netology_diplom/terraform/meta.txt")}"
     }
 
     scheduling_policy {
@@ -442,7 +442,7 @@ resource "yandex_compute_instance" "grafana" {
   }
 
   metadata = {
-    user-data = "${file("~/netology_diplom/diplom-terraform/meta.txt")}"
+    user-data = "${file("~/netology_diplom/terraform/meta.txt")}"
   }
 
   scheduling_policy {
@@ -523,7 +523,7 @@ resource "yandex_compute_instance" "kibana" {
   }
 
   metadata = {
-    user-data = "${file("~/netology_diplom/diplom-terraform/meta.txt")}"
+    user-data = "${file("~/netology_diplom/terraform/meta.txt")}"
   }
 
   scheduling_policy {
@@ -597,7 +597,7 @@ resource "yandex_compute_instance" "prometheus" {
   }
 
   metadata = {
-    user-data = "${file("~/netology_diplom/diplom-terraform/meta.txt")}"
+    user-data = "${file("~/netology_diplom/terraform/meta.txt")}"
   }
 
   scheduling_policy {
@@ -678,7 +678,7 @@ resource "yandex_compute_instance" "elastic" {
   }
 
   metadata = {
-    user-data = "${file("~/netology_diplom/diplom-terraform/meta.txt")}"
+    user-data = "${file("~/netology_diplom/terraform/meta.txt")}"
   }
 
   scheduling_policy {
@@ -691,7 +691,9 @@ resource "yandex_compute_instance" "elastic" {
 resource "yandex_compute_snapshot_schedule" "snapshot" {
   name           = "my-snapshot"
   folder_id   = "${yandex_resourcemanager_folder.mysite.id}"
-
+  depends_on = [
+    yandex_compute_instance.admin , yandex_compute_instance.elastic , yandex_compute_instance.kibana , yandex_compute_instance.prometheus , yandex_compute_instance.grafana
+  ]
   schedule_policy {
     expression = "00 00 ? * *"
   }
@@ -707,47 +709,3 @@ resource "yandex_compute_snapshot_schedule" "snapshot" {
 
 #######################################################################
 
-# data "yandex_compute_instance" "web-1" {
-#   name = "web-1"
-#   folder_id   = "${yandex_resourcemanager_folder.mysite.id}"
-#   depends_on = [
-#     yandex_alb_load_balancer.mysite-balancer
-#   ]
-# }
-
-# data "yandex_compute_instance" "web-2" {
-#   name = "web-2"
-#   folder_id   = "${yandex_resourcemanager_folder.mysite.id}"
-#   depends_on = [
-#     yandex_alb_load_balancer.mysite-balancer
-#   ]
-# }
-
-# data "yandex_compute_instance" "web-3" {
-#   name = "web-3"
-#   folder_id   = "${yandex_resourcemanager_folder.mysite.id}"
-#   depends_on = [
-#     yandex_alb_load_balancer.mysite-balancer
-#   ] 
-# }
-
-######################################################################
-
-# resource "yandex_compute_snapshot_schedule" "snapshot" {
-#   name           = "my-snapshot"
-#   folder_id   = "${yandex_resourcemanager_folder.mysite.id}"
-
-#   schedule_policy {
-#     expression = "00 00 ? * *"
-#   }
-
-#   snapshot_count = 7
-
-#   snapshot_spec {
-#       description = "snapshot-everyday"
-#   }
-
-#   disk_ids = ["${yandex_compute_instance.admin.boot_disk.0.disk_id}", "${yandex_compute_instance.elastic.boot_disk.0.disk_id}", "${yandex_compute_instance.kibana.boot_disk.0.disk_id}", "${yandex_compute_instance.prometheus.boot_disk.0.disk_id}", "${yandex_compute_instance.grafana.boot_disk.0.disk_id}", "${data.yandex_compute_instance.web-1.boot_disk.0.disk_id}", "${data.yandex_compute_instance.web-2.boot_disk.0.disk_id}", "${data.yandex_compute_instance.web-3.boot_disk.0.disk_id}"]
-# }
-
-#######################################################################

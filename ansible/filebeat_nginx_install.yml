@@ -2,6 +2,14 @@
 - hosts: webservers
   tasks:
 
+     - name: Install required system packages
+       apt:
+        pkg:
+          - apt-transport-https
+          - wget
+        state: latest
+        update_cache: no
+
      - name: Download filebeat
        get_url:
            url: https://storage.yandexcloud.net/drugov/ELK7/filebeat-7.17.8-amd64.deb?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=YCAJEAvqBdVwYwsmpSHOunfAn%2F20230122%2Fru-central1%2Fs3%2Faws4_request&X-Amz-Date=20230122T145147Z&X-Amz-Expires=2592000&X-Amz-Signature=DBA0D7B8317D8EFD3843684809E34072FBC9CF0BA5F7CE169C1EA24FD292E4E3&X-Amz-SignedHeaders=host
@@ -9,7 +17,6 @@
 
      - name: Install filebeat
        apt:
-         update_cache: yes
          deb: /home/admin/filebeat-7.17.8-amd64.deb
 
      - name: Apply filebet template
@@ -17,17 +24,17 @@
         src: files/filebeat.yml.j2
         dest: /etc/filebeat/filebeat.yml
 
-    #  - name:
-    #    lineinfile:
-    #     path: /etc/filebeat/filebeat.yml
-    #     regexp: '^\s*#username:'
-    #     line: '  username: "elastic"'
+     - name:
+       lineinfile:
+        path: /etc/filebeat/filebeat.yml
+        regexp: '^\s*#username:'
+        line: '  username: "elastic"'
 
-    #  - name:
-    #    lineinfile:
-    #     path: /etc/filebeat/filebeat.yml
-    #     regexp: '^\s*#password:'
-    #     line: '  password: "301076"'
+     - name:
+       lineinfile:
+        path: /etc/filebeat/filebeat.yml
+        regexp: '^\s*#password:'
+        line: '  password: "301076"'
 
      - name: Execute the command
        shell: filebeat modules enable nginx

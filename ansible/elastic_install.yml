@@ -2,26 +2,27 @@
 - hosts: elasticsearch
   tasks:
 
+     - name: Install required system packages
+       apt:
+        pkg:
+          - apt-transport-https
+          - wget
+          - software-properties-common
+          - default-jdk
+          - python3-pexpect
+        state: latest
+        install_recommends: no
+        update_cache: yes
+
      - name: Download Elasticsearch
        get_url:
            url: https://storage.yandexcloud.net/drugov/ELK7/elasticsearch-7.17.8-amd64.deb?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=YCAJEAvqBdVwYwsmpSHOunfAn%2F20230122%2Fru-central1%2Fs3%2Faws4_request&X-Amz-Date=20230122T144633Z&X-Amz-Expires=2592000&X-Amz-Signature=6C7FFDEAED5CC06350AA603087D6F612840D5A4561F65373B80D4EAEE02B826F&X-Amz-SignedHeaders=host
            dest: /home/admin/
 
-     - name: Install  Java
-       apt:
-         update_cache: yes
-         name: default-jdk
-         install_recommends: no
-
      - name: Install  Elasticsearch
        apt:
          update_cache: no
          deb: /home/admin/elasticsearch-7.17.8-amd64.deb
-
-    #  - name: Copy config file
-    #    template:
-    #       src: files/elasticsearch.yml.j2
-    #       dest: /etc/elasticsearch/elasticsearch.yml
 
      - name:
        lineinfile:
@@ -35,20 +36,28 @@
         regexp: '^\s*#discovery.seed_hosts:'
         line: 'discovery.seed_hosts: ["192.168.3.5"]'
 
-    #  - name:
-    #    lineinfile:
-    #     path: /etc/elasticsearch/elasticsearch.yml
-    #     line: 'xpack.security.enabled: true'
+     - name:
+       lineinfile:
+        path: /etc/elasticsearch/elasticsearch.yml
+        line: 'xpack.security.enabled: true'
 
-    #  - name:
-    #    lineinfile:
-    #     path: /etc/elasticsearch/elasticsearch.yml
-    #     line: 'discovery.type: single-node'
+     - name:
+       lineinfile:
+        path: /etc/elasticsearch/elasticsearch.yml
+        line: 'discovery.type: single-node'
 
-    #  - name: Copy Elasticsearch Config
-    #    copy:
-    #     src: elasticsearch.yml.j2
-    #     dest: /etc/elasticsearch/elasticsearch.yml
+     - name: start Elasticsearch
+       service:
+         name: elasticsearch
+         enabled: yes
+         state: restarted
+
+     - name: 
+       expect:
+        command: /usr/share/elasticsearch/bin/elasticsearch-setup-passwords interactive -b
+        echo: true
+        responses:
+             (?i)password.*: "301076"
 
      - name: start Elasticsearch
        service:
