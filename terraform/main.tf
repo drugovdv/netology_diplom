@@ -367,8 +367,6 @@ resource "yandex_alb_load_balancer" "mysite-balancer" {
   }
 }
 
-
-
 ##################################################################################################################################
 
 resource "yandex_vpc_security_group" "graf" {
@@ -691,9 +689,7 @@ resource "yandex_compute_instance" "elastic" {
 resource "yandex_compute_snapshot_schedule" "snapshot" {
   name           = "my-snapshot"
   folder_id   = "${yandex_resourcemanager_folder.mysite.id}"
-  depends_on = [
-    yandex_compute_instance.admin , yandex_compute_instance.elastic , yandex_compute_instance.kibana , yandex_compute_instance.prometheus , yandex_compute_instance.grafana
-  ]
+
   schedule_policy {
     expression = "00 00 ? * *"
   }
@@ -713,7 +709,34 @@ data "yandex_compute_instance" "admin" {
   instance_id = "${yandex_compute_instance.admin.id}"
 }
 
+data "yandex_compute_instance" "kibana" {
+  instance_id = "${yandex_compute_instance.kibana.id}"
+}
+
+data "yandex_compute_instance" "grafana" {
+  instance_id = "${yandex_compute_instance.grafana.id}"
+}
+
 resource "local_file" "admin_external_ip" {
   content = "${data.yandex_compute_instance.admin.network_interface.0.nat_ip_address}"
-  filename = "admin_external_ip"
+  filename = "external_ip/admin_external_ip"
+}
+
+resource "local_file" "kibana_external_ip" {
+  content = "${data.yandex_compute_instance.kibana.network_interface.0.nat_ip_address}"
+  filename = "external_ip/kibana_external_ip"
+}
+
+resource "local_file" "grafana_external_ip" {
+  content = "${data.yandex_compute_instance.grafana.network_interface.0.nat_ip_address}"
+  filename = "external_ip/grafana_external_ip"
+}
+
+data "yandex_alb_load_balancer" "mysite-balancer" {
+  load_balancer_id = "${yandex_alb_load_balancer.mysite-balancer.id}"
+}
+
+resource "local_file" "alb_external_ip" {
+  content = "${data.yandex_alb_load_balancer.mysite-balancer.listener.0.endpoint.0.address.0.external_ipv4_address.0.address}"
+  filename = "external_ip/site_external_ip"
 }
