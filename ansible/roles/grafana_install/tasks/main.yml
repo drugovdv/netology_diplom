@@ -1,6 +1,5 @@
 ---
-- hosts: grafana
-  tasks:
+# tasks file for grafana_install
 
      - name: Install required system packages
        apt:
@@ -23,30 +22,21 @@
 
      - name: Copy config file for Datasources
        template:
-          src: files/grafana_datasources.yml.j2
+          src: grafana_datasources.yml.j2
           dest: /etc/grafana/provisioning/datasources/grafana_datasources.yml
 
      - name: Copy config file for Dashboards
        template:
-          src: files/grafana_dashboards.yml.j2
+          src: grafana_dashboards.yml.j2
           dest: /etc/grafana/provisioning/dashboards/grafana_dashboards.yml               
 
      - name: Copy  Dashboards Nginx
        copy:
-          src: files/nginx_dashboard.json
+          src: nginx_dashboard.json
           dest: /etc/grafana/provisioning/dashboards/nginx_dashboard.json
 
      - name: Copy  Dashboards Node
        copy:
-          src:  files/node_dashboard.json
+          src:  node_dashboard.json
           dest: /etc/grafana/provisioning/dashboards/node_dashboard.json
-
-     - name: start Grafana
-       service:
-         name: grafana-server
-         enabled: yes
-         state: restarted
-  
-
-       
-...
+       notify: Restart Grafana

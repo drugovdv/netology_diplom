@@ -709,3 +709,11 @@ resource "yandex_compute_snapshot_schedule" "snapshot" {
 
 #######################################################################
 
+data "yandex_compute_instance" "admin" {
+  instance_id = "${yandex_compute_instance.admin.id}"
+}
+
+resource "local_file" "admin_external_ip" {
+  content = "${data.yandex_compute_instance.admin.network_interface.0.nat_ip_address}"
+  filename = "admin_external_ip"
+}

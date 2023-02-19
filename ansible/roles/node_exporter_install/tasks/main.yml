@@ -1,0 +1,14 @@
+---
+# tasks file for node_exporter_install
+    - name: Install node-exporter
+      apt:
+        name: prometheus-node-exporter
+        state: latest
+        update_cache: true
+
+    - name: restart prometheus-node-exporter
+      systemd:
+        daemon_reload: true
+        name: prometheus-node-exporter
+        state: started
+        enabled: yes 

@@ -1,0 +1,33 @@
+---
+- name: Elastic
+  hosts: elasticsearch
+  roles:
+    - elastic_install
+
+- name: Prometheus
+  hosts: prometheus
+  roles:
+    - prometheus_install
+
+- name: Node_exporter
+  hosts: all
+  roles:
+    - node_exporter_install
+
+- name: Grafana
+  hosts: grafana
+  roles:
+    - grafana_install
+
+- name: Kibana
+  hosts: kibana
+  roles:
+    - kibana_install
+
+- name: Mysite
+  hosts: webservers
+  roles:
+    - mysite_install
+    - nginx_log_exporter_install
+    - filebeat_mysite_install
+...

@@ -1,0 +1,7 @@
+---
+# handlers file for nginx_log_exporter__install
+    - name: Restart prometheus-nginxlog-exporter
+      service:
+        name: prometheus-nginxlog-exporter
+        enabled: yes
+        state: restarted 

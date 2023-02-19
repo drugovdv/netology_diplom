@@ -1,7 +1,5 @@
 ---
-- hosts: elasticsearch
-  tasks:
-
+# tasks file for elastic_install
      - name: Install required system packages
        apt:
         pkg:
@@ -24,60 +22,39 @@
          update_cache: no
          deb: /home/admin/elasticsearch-7.17.8-amd64.deb
 
-     - name:
+     - name: Change config
        lineinfile:
         path: /etc/elasticsearch/elasticsearch.yml
         regexp: '^\s*#network.host:'
-        line: 'network.host: "192.168.3.5" '
+        line: 'network.host: "{{ server_host }}" '
 
-     - name:
+     - name: Change config
        lineinfile:
         path: /etc/elasticsearch/elasticsearch.yml
         regexp: '^\s*#discovery.seed_hosts:'
-        line: 'discovery.seed_hosts: ["192.168.3.5"]'
+        line: 'discovery.seed_hosts: ["{{ server_host }}"]'
 
-     - name:
+     - name: Change config
        lineinfile:
         path: /etc/elasticsearch/elasticsearch.yml
         line: 'xpack.security.enabled: true'
 
-     - name:
+     - name: Change config
        lineinfile:
         path: /etc/elasticsearch/elasticsearch.yml
         line: 'discovery.type: single-node'
+       notify: Restart Elasticsearch
 
-     - name: start Elasticsearch
+     - name: Start Elasticsearch
        service:
-         name: elasticsearch
-         enabled: yes
-         state: restarted
+        name: elasticsearch
+        enabled: yes
+        state: started
 
-     - name: 
+     - name: Password
        expect:
         command: /usr/share/elasticsearch/bin/elasticsearch-setup-passwords interactive -b
         echo: true
         responses:
-             (?i)password.*: "301076"
-
-     - name: start Elasticsearch
-       service:
-         name: elasticsearch
-         enabled: yes
-         state: restarted
-
-    #  - name: Download Logstash
-    #    get_url:
-    #        url: https://storage.yandexcloud.net/drugov/ELK7/logstash-7.17.8-amd64.deb?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=YCAJEAvqBdVwYwsmpSHOunfAn%2F20230122%2Fru-central1%2Fs3%2Faws4_request&X-Amz-Date=20230122T144820Z&X-Amz-Expires=2592000&X-Amz-Signature=283CAD8DC2FFF37754E31002C3CD26369426CEA13A070A482BAD1783459E86B8&X-Amz-SignedHeaders=host
-    #        dest: /home/admin/  
-
-    #  - name: Install  Logstash
-    #    apt:
-    #      update_cache: yes
-    #      deb: /home/admin/logstash-7.17.8-amd64.deb
-
-    #  - name: start Logstash
-    #    service:
-    #      name: Logstash
-    #      enabled: yes
-        #  state: started
-...
+             (?i)password.*: "{{ password_elastic }}"
+       notify: Restart Elasticsearch

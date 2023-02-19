@@ -1,7 +1,5 @@
 ---
-- hosts: webservers
-  tasks:
-
+# tasks file for filebeat_mysite_install
      - name: Install required system packages
        apt:
         pkg:
@@ -21,27 +19,27 @@
 
      - name: Apply filebet template
        template:
-        src: files/filebeat.yml.j2
+        src: filebeat.yml.j2
         dest: /etc/filebeat/filebeat.yml
 
-     - name:
+     - name: Change config
        lineinfile:
         path: /etc/filebeat/filebeat.yml
         regexp: '^\s*#username:'
         line: '  username: "elastic"'
 
-     - name:
+     - name: Change config
        lineinfile:
         path: /etc/filebeat/filebeat.yml
         regexp: '^\s*#password:'
-        line: '  password: "301076"'
+        line: '  password: "{{ password_elastic }}"'
 
      - name: Execute the command
        shell: filebeat modules enable nginx
 
      - name: Apply filebet_modul template
        template:
-        src: files/nginx.yml.j2
+        src: nginx.yml.j2
         dest: /etc/filebeat/modules.d/nginx.yml
 
      - name: Execute the command
@@ -64,4 +62,3 @@
          name: filebeat
          enabled: yes
          state: started
-...

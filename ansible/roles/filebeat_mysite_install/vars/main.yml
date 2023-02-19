@@ -1,0 +1,4 @@
+---
+# vars file for filebeat_mysite_install
+
+server_host: "{{ ansible_default_ipv4.address }}"

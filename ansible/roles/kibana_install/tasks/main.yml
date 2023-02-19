@@ -1,12 +1,9 @@
 ---
-- hosts: kibana
-  tasks:
-
+# tasks file for kibana_install
      - name: Install required system packages
        apt:
         pkg:
           - apt-transport-https
-          - curl
           - wget
           - software-properties-common
           - default-jdk
@@ -29,33 +26,32 @@
          enabled: yes
          state: stopped      
 
-     - name:
+     - name: Change config
        lineinfile:
         path: /etc/kibana/kibana.yml
         regexp: '^#server.host'
-        line: 'server.host: "10.1.1.14"'
+        line: 'server.host: "{{ server_host }}"'
 
-     - name:
+     - name: Change config
        lineinfile:
         path: /etc/kibana/kibana.yml
         regexp: '^#elasticsearch.hosts'
         line: 'elasticsearch.hosts: ["http://elasticsearch:9200"]'
 
-     - name:
+     - name: Change config
        lineinfile:
         path: /etc/kibana/kibana.yml
         regexp: '^#elasticsearch.username:'
         line: 'elasticsearch.username: "kibana_system"'
 
-     - name:
+     - name: Change config
        lineinfile:
         path: /etc/kibana/kibana.yml
         regexp: '^#elasticsearch.password:'
-        line: 'elasticsearch.password: "301076"'
+        line: 'elasticsearch.password: "{{ password_elastic }}"'
 
-     - name: start Kibana
+     - name: restart Kibana
        service:
          name: kibana
          enabled: yes
          state: restarted
-...

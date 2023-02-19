@@ -1,6 +1,5 @@
 ---
-- hosts: prometheus
-  tasks:
+# tasks file for prometheus_install
   
     - name: Prometheus install
       apt:
@@ -15,25 +14,16 @@
 
     - name: Copy config file
       template:
-          src: files/prometheus.yml.j2
+          src: prometheus.yml.j2
           dest: /etc/prometheus/prometheus.yml
           owner: root
           group: root
           mode: '0644'
           backup: yes
 
-    - name: restart Prometheus
+    - name: start Prometheus
       systemd:
         daemon_reload: true
         name: prometheus
         state: started
         enabled: yes
-
-- hosts: all
-  tasks:
-    - name: Install node-exporter
-      apt:
-        name: prometheus-node-exporter
-        state: latest
-        update_cache: true 
-        
