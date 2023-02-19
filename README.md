@@ -10,6 +10,8 @@ https://github.com/drugovdv/netology_diplom/tree/main/terraform
 
 ### Подключаемся по SSH к хосту admin по ip из файла terraform/external_ip/admin_external_ip
 
+  - копируем на хост admin id_rsa.
+  
 ------
 
 ### С помощью ansible устанавливаем все остальное 
