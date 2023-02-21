@@ -14,7 +14,7 @@
 
      - name: Download Elasticsearch
        get_url:
-           url: https://storage.yandexcloud.net/drugov/ELK7/elasticsearch-7.17.8-amd64.deb?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=YCAJEAvqBdVwYwsmpSHOunfAn%2F20230122%2Fru-central1%2Fs3%2Faws4_request&X-Amz-Date=20230122T144633Z&X-Amz-Expires=2592000&X-Amz-Signature=6C7FFDEAED5CC06350AA603087D6F612840D5A4561F65373B80D4EAEE02B826F&X-Amz-SignedHeaders=host
+           url: https://storage.yandexcloud.net/drugov/ELK7/elasticsearch-7.17.8-amd64.deb?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=YCAJEAvqBdVwYwsmpSHOunfAn%2F20230221%2Fru-central1%2Fs3%2Faws4_request&X-Amz-Date=20230221T195937Z&X-Amz-Expires=2592000&X-Amz-Signature=B9A90E5D62E9382F2D4947083F5D63BC6457A6DB0BC936187A63A9BFB3F25A5C&X-Amz-SignedHeaders=host
            dest: /home/admin/
 
      - name: Install  Elasticsearch
@@ -22,28 +22,10 @@
          update_cache: no
          deb: /home/admin/elasticsearch-7.17.8-amd64.deb
 
-     - name: Change config
-       lineinfile:
-        path: /etc/elasticsearch/elasticsearch.yml
-        regexp: '^\s*#network.host:'
-        line: 'network.host: "{{ server_host }}" '
-
-     - name: Change config
-       lineinfile:
-        path: /etc/elasticsearch/elasticsearch.yml
-        regexp: '^\s*#discovery.seed_hosts:'
-        line: 'discovery.seed_hosts: ["{{ server_host }}"]'
-
-     - name: Change config
-       lineinfile:
-        path: /etc/elasticsearch/elasticsearch.yml
-        line: 'xpack.security.enabled: true'
-
-     - name: Change config
-       lineinfile:
-        path: /etc/elasticsearch/elasticsearch.yml
-        line: 'discovery.type: single-node'
-       notify: Restart Elasticsearch
+     - name: Copy config file Elasticsearch
+       template:
+          src: elasticsearch.yml.j2
+          dest: /etc/elasticsearch/elasticsearch.yml
 
      - name: Start Elasticsearch
        service:

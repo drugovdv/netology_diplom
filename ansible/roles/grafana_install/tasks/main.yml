@@ -21,13 +21,13 @@
          deb: /home/admin/grafana-enterprise_9.3.6_amd64.deb
 
      - name: Copy config file for Datasources
-       template:
-          src: grafana_datasources.yml.j2
+       copy:
+          src: grafana_datasources.yml
           dest: /etc/grafana/provisioning/datasources/grafana_datasources.yml
 
      - name: Copy config file for Dashboards
-       template:
-          src: grafana_dashboards.yml.j2
+       copy:
+          src: grafana_dashboards.yml
           dest: /etc/grafana/provisioning/dashboards/grafana_dashboards.yml               
 
      - name: Copy  Dashboards Nginx

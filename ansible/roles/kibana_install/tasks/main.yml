@@ -13,7 +13,7 @@
 
      - name: Download Kibana
        get_url:
-           url: https://storage.yandexcloud.net/drugov/ELK7/kibana-7.17.8-amd64.deb?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=YCAJEAvqBdVwYwsmpSHOunfAn%2F20230122%2Fru-central1%2Fs3%2Faws4_request&X-Amz-Date=20230122T145004Z&X-Amz-Expires=2592000&X-Amz-Signature=0E632D9917190F0DC09D2B0B1EAE6D151235D9C5CFAADF86F9E3DC2D657F2656&X-Amz-SignedHeaders=host
+           url: https://storage.yandexcloud.net/drugov/ELK7/kibana-7.17.8-amd64.deb?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=YCAJEAvqBdVwYwsmpSHOunfAn%2F20230221%2Fru-central1%2Fs3%2Faws4_request&X-Amz-Date=20230221T180815Z&X-Amz-Expires=2592000&X-Amz-Signature=99C45ED2C41FAAB5818CB6F65206AF8C5CC1E7C3FC88E3A09571680C32FD6C01&X-Amz-SignedHeaders=host
            dest: /home/admin/
 
      - name: Install Kibana 
@@ -24,31 +24,12 @@
        service:
          name: kibana
          enabled: yes
-         state: stopped      
+         state: stopped
 
-     - name: Change config
-       lineinfile:
-        path: /etc/kibana/kibana.yml
-        regexp: '^#server.host'
-        line: 'server.host: "{{ server_host }}"'
-
-     - name: Change config
-       lineinfile:
-        path: /etc/kibana/kibana.yml
-        regexp: '^#elasticsearch.hosts'
-        line: 'elasticsearch.hosts: ["http://elasticsearch:9200"]'
-
-     - name: Change config
-       lineinfile:
-        path: /etc/kibana/kibana.yml
-        regexp: '^#elasticsearch.username:'
-        line: 'elasticsearch.username: "kibana_system"'
-
-     - name: Change config
-       lineinfile:
-        path: /etc/kibana/kibana.yml
-        regexp: '^#elasticsearch.password:'
-        line: 'elasticsearch.password: "{{ password_elastic }}"'
+     - name: Copy config file kibana
+       template:
+          src: kibana.yml.j2
+          dest: /etc/kibana/kibana.yml          
 
      - name: restart Kibana
        service:
