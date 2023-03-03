@@ -257,7 +257,7 @@ resource "yandex_compute_instance_group" "web" {
     }
   
     metadata = {
-    user-data = "${file("~/netology_diplom/terraform/meta.txt")}"
+    user-data = "${file("~/netology_diplom/terraform/nginx.meta.txt")}"
     }
 
     scheduling_policy {
