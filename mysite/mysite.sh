@@ -1,5 +1,4 @@
 #!/bin/bash
-git clone https://github.com/drugovdv/netology_diplom.git
 sudo apt install -y nginx
 sudo systemctl enable nginx
 sudo cp -R ~/netology_diplom/mysite/My_site /var/www/
