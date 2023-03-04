@@ -2,7 +2,7 @@
 
 ------
 
-### Разворачиваем инфраструктуру с помощью Terraform
+### Разворачиваем инфраструктуру и сайт на webservers с помощью Terraform
 
 https://github.com/drugovdv/netology_diplom/tree/main/terraform
 
