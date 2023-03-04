@@ -13,7 +13,7 @@
 
      - name: Download Kibana
        get_url:
-           url: https://storage.yandexcloud.net/drugov/ELK7/kibana-7.17.8-amd64.deb?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=YCAJEAvqBdVwYwsmpSHOunfAn%2F20230221%2Fru-central1%2Fs3%2Faws4_request&X-Amz-Date=20230221T180815Z&X-Amz-Expires=2592000&X-Amz-Signature=99C45ED2C41FAAB5818CB6F65206AF8C5CC1E7C3FC88E3A09571680C32FD6C01&X-Amz-SignedHeaders=host
+           url: https://storage.yandexcloud.net/drugov/ELK7/kibana-7.17.8-amd64.deb?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=YCAJEAvqBdVwYwsmpSHOunfAn%2F20230304%2Fru-central1%2Fs3%2Faws4_request&X-Amz-Date=20230304T161933Z&X-Amz-Expires=2592000&X-Amz-Signature=19FA5D5D388936039CA4F936EE19B8ABFA07C7184C75B4ADBB98709B48651AB9&X-Amz-SignedHeaders=host
            dest: /home/admin/
 
      - name: Install Kibana 

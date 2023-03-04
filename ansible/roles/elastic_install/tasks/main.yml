@@ -14,7 +14,7 @@
 
      - name: Download Elasticsearch
        get_url:
-           url: https://storage.yandexcloud.net/drugov/ELK7/elasticsearch-7.17.8-amd64.deb?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=YCAJEAvqBdVwYwsmpSHOunfAn%2F20230221%2Fru-central1%2Fs3%2Faws4_request&X-Amz-Date=20230221T195937Z&X-Amz-Expires=2592000&X-Amz-Signature=B9A90E5D62E9382F2D4947083F5D63BC6457A6DB0BC936187A63A9BFB3F25A5C&X-Amz-SignedHeaders=host
+           url: https://storage.yandexcloud.net/drugov/ELK7/elasticsearch-7.17.8-amd64.deb?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=YCAJEAvqBdVwYwsmpSHOunfAn%2F20230304%2Fru-central1%2Fs3%2Faws4_request&X-Amz-Date=20230304T161758Z&X-Amz-Expires=2592000&X-Amz-Signature=6818E2FE0E7A8BFFE4304B01E8B279DB18A878641739FC123C1B28F500F11250&X-Amz-SignedHeaders=host
            dest: /home/admin/
 
      - name: Install  Elasticsearch
