@@ -27,7 +27,6 @@
 - name: Mysite
   hosts: webservers
   roles:
-    - mysite_install
     - nginx_log_exporter_install
     - filebeat_mysite_install
 ...

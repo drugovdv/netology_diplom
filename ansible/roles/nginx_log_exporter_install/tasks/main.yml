@@ -1,7 +1,5 @@
 ---
 # tasks file for nginx_log_exporter__install
-
-
     - name: "Install prometheus-nginxlog-exporter"
       apt:
         deb: https://github.com/martin-helmich/prometheus-nginxlog-exporter/releases/download/v1.10.0/prometheus-nginxlog-exporter_1.10.0_linux_amd64.deb
@@ -17,3 +15,4 @@
         src: prometheus-nginxlog-exporter.hcl.j2
         dest: /etc/prometheus-nginxlog-exporter.hcl
       notify: Restart prometheus-nginxlog-exporter
+...

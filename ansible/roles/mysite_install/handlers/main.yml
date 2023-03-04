@@ -1,8 +1,0 @@
----
-# handlers file for mysite_install
-
-
-    - name: Restart Nginx
-      service:
-        name: nginx
-        state: restarted

@@ -11,4 +11,5 @@
         daemon_reload: true
         name: prometheus-node-exporter
         state: started
-        enabled: yes 
+        enabled: yes
+... 

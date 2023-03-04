@@ -40,3 +40,4 @@
         responses:
              (?i)password.*: "{{ password_elastic }}"
        notify: Restart Elasticsearch
+...

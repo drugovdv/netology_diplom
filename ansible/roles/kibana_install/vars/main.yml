@@ -1,4 +1,4 @@
 ---
 # vars file for kibana_install
-
 server_host: "{{ ansible_default_ipv4.address }}"
+...

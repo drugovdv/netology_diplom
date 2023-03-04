@@ -1,6 +1,5 @@
 ---
 # tasks file for grafana_install
-
      - name: Install required system packages
        apt:
         pkg:
@@ -40,3 +39,4 @@
           src:  node_dashboard.json
           dest: /etc/grafana/provisioning/dashboards/node_dashboard.json
        notify: Restart Grafana
+...

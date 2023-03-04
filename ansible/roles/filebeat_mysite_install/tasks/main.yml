@@ -10,7 +10,7 @@
 
      - name: Download filebeat
        get_url:
-           url: https://storage.yandexcloud.net/drugov/ELK7/filebeat-7.17.8-amd64.deb?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=YCAJEAvqBdVwYwsmpSHOunfAn%2F20230122%2Fru-central1%2Fs3%2Faws4_request&X-Amz-Date=20230122T145147Z&X-Amz-Expires=2592000&X-Amz-Signature=DBA0D7B8317D8EFD3843684809E34072FBC9CF0BA5F7CE169C1EA24FD292E4E3&X-Amz-SignedHeaders=host
+           url: https://storage.yandexcloud.net/drugov/ELK7/filebeat-7.17.8-amd64.deb?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=YCAJEAvqBdVwYwsmpSHOunfAn%2F20230304%2Fru-central1%2Fs3%2Faws4_request&X-Amz-Date=20230304T154750Z&X-Amz-Expires=2592000&X-Amz-Signature=CA939AB6F19D034243B5AE60A7A6B0D660A73BB5A9511A0F777F8155BA299352&X-Amz-SignedHeaders=host
            dest: /home/admin/
 
      - name: Install filebeat
@@ -62,3 +62,4 @@
          name: filebeat
          enabled: yes
          state: started
+...

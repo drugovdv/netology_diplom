@@ -36,3 +36,4 @@
          name: kibana
          enabled: yes
          state: restarted
+...
