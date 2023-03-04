@@ -8,14 +8,11 @@ users:
      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDNUu6gyZJe0aq82aXFlGeAU/s4bTVa6rSIwprZwliqH3y8bAWF/zHDmjJIS4MJn3llfu46satoCqPNd7q+4bNCxPvhLyF7NZMtdFV7i8dc1mdOmjE5RhZqwuABNda4M3JxIY5L0G9aF01I9BW0Ws7bnJefJjbtCTY010SIhg16sGBN0KOvRovuyqMp4OGH87gd0z8bTi04GOX3hqERbULtynAwurEPj4EOOO754UwOmUxpeIO79ulRetnkQQIDiR35iST9Gb9hoP6RNXUiKURHzpGv7mgq1qbTq05q10U6h1Pd6HVBwyrUijKbZQf3d4bX7drX22dm//4g+1QnSngSWEQevADXgwlGFu7jGm2W40kpn5WzJPtsSn2t8fe7+7wC5cUmal/Hew2n83IBXAOyR/rtPeBfHVcZ6EOzbGN2Bw8iK8IsBK+jMsOEvIN9rxNRioYlCtBPGx2+8ptgYsVQfaVribdGm8+Tqn36d7U6mwu7wmavuAbpin0KuBqxWxk= drugov@ubuntuOne
 
 package_update: true
-package_upgrade: false
 
 packages:
-  - git
-
+  - zip
+ 
 runcmd:
- - git clone https://github.com/drugovdv/netology_diplom.git /home/admin/
-
-runcmd:
- - ./netology_diplom/mysite/mysite.sh
-
+ - wget -P /home/admin/ https://github.com/drugovdv/netology_diplom/archive/refs/heads/main.zip
+ - unzip /home/admin/main.zip -d /home/admin/
+ - /home/admin/netology_diplom-main/mysite/mysite.sh
