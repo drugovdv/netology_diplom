@@ -1,4 +1,3 @@
 terraform.*
 *token*
 .terraform*
-*_external_ip*

@@ -1,0 +1,8 @@
+---
+- name: Mysite
+  hosts: webservers
+  roles:
+    - node_exporter_install
+    - nginx_log_exporter_install
+    - filebeat_mysite_install
+...

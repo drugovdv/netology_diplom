@@ -4,7 +4,6 @@ variable "yandex_token" {
 
 variable "yandex_cloud_id" {
   type        = string
-  default     = "b1gio0bqn8oluljblhqi"
 }
 
 variable "yandex_webservers_image_id" {
