@@ -14,17 +14,23 @@ https://github.com/drugovdv/netology_diplom/tree/main/terraform
   
 ------
 
-### С помощью ansible устанавливаем все остальное 
+### С помощью ansible
 
-https://github.com/drugovdv/netology_diplom/tree/main/ansible
+  - **устанавливаем сначала окружение для мониторинга** 
+
+https://github.com/drugovdv/netology_diplom/blob/main/ansible/monitoring.yml
 
 предварительно заменив в файле **ansible/group_vars/all** :
 
-   - ip на внешний ip из файла terraform/eternal_ip/admin_external_ip 
+ip на внешний ip из файла terraform/eternal_ip/admin_external_ip 
  
-   - password_elastic на свой пароль
+password_elastic на свой пароль
+   
+  - **устанавливаем на вебсерверы exporters и filebeat**
+  
+https://github.com/drugovdv/netology_diplom/blob/main/ansible/mysite_exporters.yml  
 
-### Подключение по ip из файлов в terraform/external_ip
+### Подключение по ip из файлов в директории  terraform/external_ip
 
 grafana_external_ip:3000 -  Логин:  admin    Пароль: password_elastic
 
